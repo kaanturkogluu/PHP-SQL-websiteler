@@ -1,0 +1,156 @@
+-- Kullanici mail tablosu
+CREATE TABLE kullanici_mail (
+  mail_id INT AUTO_INCREMENT PRIMARY KEY,
+  mail VARCHAR(50)
+) ENGINE=InnoDB;
+
+-- Kullanici sifre tablosu
+CREATE TABLE kullanici_sifre (
+  sifre_id INT AUTO_INCREMENT PRIMARY KEY,
+  kullanici_sifre VARCHAR(25)
+) ENGINE=InnoDB;
+
+-- Kullanici telefon tablosu
+CREATE TABLE kullanici_telefon (
+  telefon_id INT AUTO_INCREMENT PRIMARY KEY,
+  telefon VARCHAR(20)
+) ENGINE=InnoDB;
+
+-- Resimler tablosu
+CREATE TABLE resimler (
+  resim_id INT AUTO_INCREMENT PRIMARY KEY,
+  resim VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- Bolum tablosu
+CREATE TABLE bolum (
+  bolum_id INT AUTO_INCREMENT PRIMARY KEY,
+  bolumler VARCHAR(100)
+) ENGINE=InnoDB;
+
+-- Yazilar tablosu
+CREATE TABLE yazilar (
+  yazi_id INT AUTO_INCREMENT PRIMARY KEY,
+  yazi VARCHAR(1000)
+) ENGINE=InnoDB;
+
+-- Alan tablosu
+CREATE TABLE alan (
+  alan_id INT AUTO_INCREMENT PRIMARY KEY,
+  alanlar VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- Profil resimleri tablosu
+CREATE TABLE profil_resimleri (
+ resim_id INT AUTO_INCREMENT PRIMARY KEY, 
+ resim VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- Kullanici hakkinda tablosu
+CREATE TABLE kullanici_hakkinda (
+  hakkimda_id INT AUTO_INCREMENT PRIMARY KEY,
+  hakkimda VARCHAR(400)
+) ENGINE=InnoDB;
+
+-- Kullanici profil tablosu
+CREATE TABLE kullanici_profil (
+  profil_id INT AUTO_INCREMENT PRIMARY KEY,
+  profil_resim_id INT,
+  kullanici_adi VARCHAR(50),
+  ad VARCHAR(50),
+  soyad VARCHAR(50),
+  mail_id INT,
+  hakkinda_id INT,
+  sifre_id INT,
+  telefon_id INT,
+  dogum_tarihi DATE,
+  bolum_id INT,
+  alan_id INT,
+  medya_id INT,
+   
+  FOREIGN KEY (mail_id) REFERENCES kullanici_mail(mail_id),
+  FOREIGN KEY (sifre_id) REFERENCES kullanici_sifre(sifre_id),
+  FOREIGN KEY (telefon_id) REFERENCES kullanici_telefon(telefon_id),
+  FOREIGN KEY (bolum_id) REFERENCES bolum(bolum_id),
+  FOREIGN KEY (alan_id) REFERENCES alan(alan_id),
+  FOREIGN KEY (profil_resim_id) REFERENCES profil_resimleri(resim_id),
+  FOREIGN KEY (hakkinda_id) REFERENCES kullanici_hakkinda(hakkimda_id)	
+) ENGINE=InnoDB;
+
+-- Giris tablosu
+CREATE TABLE Giris ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  mail_id INT , 
+  sifre_id INT ,
+  is_admin INT DEFAULT 0,
+  FOREIGN KEY (mail_id) REFERENCES kullanici_mail(mail_id),
+  FOREIGN KEY (sifre_id) REFERENCES kullanici_sifre(sifre_id)
+) ENGINE=InnoDB;
+
+-- Takip tablosu
+CREATE TABLE takip (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  takip_eden_id INT NOT NULL,
+  takip_edilen_id INT NOT NULL,
+  takip_tarihi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (takip_eden_id) REFERENCES kullanici_profil(profil_id),
+  FOREIGN KEY (takip_edilen_id) REFERENCES kullanici_profil(profil_id)
+) ENGINE=InnoDB;
+
+-- Sosyal medya tablosu
+CREATE TABLE sosyal_medya (
+  medya_id INT AUTO_INCREMENT PRIMARY KEY,
+  instagram VARCHAR(50),
+  linkedin VARCHAR(50),
+  youtube VARCHAR(50),
+  profil_id INT,
+  FOREIGN KEY (profil_id) REFERENCES kullanici_profil(profil_id)
+) ENGINE=InnoDB;
+
+-- Postlar tablosu
+CREATE TABLE postlar (
+  post_id INT AUTO_INCREMENT PRIMARY KEY,
+  profil_id INT,
+  baslik VARCHAR(100),
+  yazi_id INT,
+  tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (profil_id) REFERENCES kullanici_profil(profil_id),
+  FOREIGN KEY (yazi_id) REFERENCES yazilar(yazi_id)
+) ENGINE=InnoDB;
+
+-- Postlar - Resimler ilişki tablosu
+CREATE TABLE post_resim (
+  post_id INT,
+  resim_id INT,
+  FOREIGN KEY (post_id) REFERENCES postlar(post_id),
+  FOREIGN KEY (resim_id) REFERENCES resimler(resim_id)
+) ENGINE=InnoDB;
+-- Yorumlar tablosu
+CREATE TABLE yorumlar (
+  yorum_id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT,
+  kullanici_id INT,
+  yorum VARCHAR(500),
+  tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_id) REFERENCES postlar(post_id),
+  FOREIGN KEY (kullanici_id) REFERENCES kullanici_profil(profil_id)
+) ENGINE=InnoDB;
+-- Mesajlar tablosu
+CREATE TABLE mesajlar (
+  mesaj_id INT AUTO_INCREMENT PRIMARY KEY,
+  gonderen_id INT NOT NULL,
+  alici_id INT NOT NULL,
+  mesaj_metni TEXT,
+  tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (gonderen_id) REFERENCES kullanici_profil(profil_id),
+  FOREIGN KEY (alici_id) REFERENCES kullanici_profil(profil_id)
+) ENGINE=InnoDB;
+CREATE TABLE bildirimler (
+  bildirim_id INT AUTO_INCREMENT PRIMARY KEY,
+  kullanici_id INT,
+  yorum_id INT,
+  goruldu_mu TINYINT DEFAULT 0,
+  tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (kullanici_id) REFERENCES kullanici_profil(profil_id),
+  FOREIGN KEY (yorum_id) REFERENCES yorumlar(yorum_id)
+) ENGINE=InnoDB;

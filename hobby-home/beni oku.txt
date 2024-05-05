@@ -1,0 +1,9 @@
+https://www.apachefriends.org/tr/index.html 
+adresinden xampp i indirin , Apache,MySQl i start edin 
+http://localhost/phpmyadmin/index.php adresine gidin 
+üst menüde içe aktar -> 
+hobbyhome.sql içe aktarin .
+
+projeyi daha sonra çalıştırın . 
+admin giriş için => ilayda tekeli  
+şifre => 123456
